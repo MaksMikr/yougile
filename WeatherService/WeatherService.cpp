@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <string>
 using namespace std;
+
 class Weather {
 private:
     string city;
@@ -27,6 +28,12 @@ public:
         cout << "Скорость ветра: " << windSpeed << " м/с" << endl;
         cout << "Облачность: " << clouds << "%" << endl;
     }
+};
+
+class Service {
+public:
+    virtual Weather getWeather(string s) = 0;
+    virtual ~Service() {}
 };
 
 int main() {

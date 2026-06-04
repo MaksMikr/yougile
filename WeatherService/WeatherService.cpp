@@ -1,6 +1,12 @@
 ﻿#include <iostream>
 #include <string>
+#include <fstream>
+#include <stdexcept>
+
 using namespace std;
+
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 
 class Weather {
 private:
@@ -36,11 +42,40 @@ public:
     virtual ~Service() {}
 };
 
+class JsonService : public Service {
+public:
+    virtual Weather getWeather(string s) override {
+        ifstream fin(s);
+        if (!fin.is_open()) {
+            throw runtime_error("Не удалось открыть файл");
+        }
+
+        json j;
+        fin >> j;
+
+        string city = j["name"];
+        double lon = j["coord"]["lon"];
+        double lat = j["coord"]["lat"];
+        double temperature = j["main"]["temp"];
+        string weather = j["weather"][0]["description"];
+        double windSpeed = j["wind"]["speed"];
+        int clouds = j["clouds"]["all"];
+
+        return Weather(city, lon, lat, temperature, weather, windSpeed, clouds);
+    }
+};
+
 int main() {
     setlocale(LC_ALL, "rus");
 
-    Weather w("Киров", 49.6601, 58.5966, 5.69, "дождь", 4.27, 100);
-    w.print();
+    try {
+        JsonService js;
+        Weather w = js.getWeather("weather.json");
+        w.print();
+    }
+    catch (const exception& e) {
+        cout << "Ошибка: " << e.what() << endl;
+    }
 
     return 0;
 }

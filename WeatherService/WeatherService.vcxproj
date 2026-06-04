@@ -139,7 +139,11 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="pugixml.cpp" />
     <ClCompile Include="WeatherService.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pugixml.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

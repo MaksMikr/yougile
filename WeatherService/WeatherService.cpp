@@ -5,7 +5,13 @@
 
 using namespace std;
 
+<<<<<<< HEAD
 #include <nlohmann/json.hpp>
+=======
+#include "nlohmann/json.hpp"
+#include "pugixml.hpp"
+using namespace pugi;
+>>>>>>> feature-xml
 using json = nlohmann::json;
 
 class Weather {
@@ -47,7 +53,11 @@ public:
     virtual Weather getWeather(string s) override {
         ifstream fin(s);
         if (!fin.is_open()) {
+<<<<<<< HEAD
             throw runtime_error("Не удалось открыть файл");
+=======
+            throw runtime_error("Не удалось открыть JSON файл");
+>>>>>>> feature-xml
         }
 
         json j;
@@ -65,16 +75,60 @@ public:
     }
 };
 
+<<<<<<< HEAD
 int main() {
     setlocale(LC_ALL, "rus");
 
+=======
+class XmlService : public Service {
+public:
+    virtual Weather getWeather(string s) override {
+        pugi::xml_document doc;
+        pugi::xml_parse_result result = doc.load_file(s.c_str());
+        if (!result) {
+            throw runtime_error("Не удалось открыть XML файл");
+        }
+
+        pugi::xml_node root = doc.child("current");
+
+        string city = root.child("city").attribute("name").as_string();
+        double lon = root.child("city").child("coord").attribute("lon").as_double();
+        double lat = root.child("city").child("coord").attribute("lat").as_double();
+        double temperature = root.child("temperature").attribute("value").as_double();
+        string weather = root.child("weather").attribute("value").as_string();
+        double windSpeed = root.child("wind").child("speed").attribute("value").as_double();
+        int clouds = root.child("clouds").attribute("value").as_int();
+
+        return Weather(city, lon, lat, temperature, weather, windSpeed, clouds);
+    }
+};
+
+int main() {
+    setlocale(LC_ALL, "rus");
+
+    cout << "=== Проверка JSON ===" << endl;
+>>>>>>> feature-xml
     try {
         JsonService js;
         Weather w = js.getWeather("weather.json");
         w.print();
     }
     catch (const exception& e) {
+<<<<<<< HEAD
         cout << "Ошибка: " << e.what() << endl;
+=======
+        cout << "Ошибка JSON: " << e.what() << endl;
+    }
+
+    cout << "\n=== Проверка XML ===" << endl;
+    try {
+        XmlService xs;
+        Weather w = xs.getWeather("weather.xml");
+        w.print();
+    }
+    catch (const exception& e) {
+        cout << "Ошибка XML: " << e.what() << endl;
+>>>>>>> feature-xml
     }
 
     return 0;
